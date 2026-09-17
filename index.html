@@ -7,97 +7,503 @@
     <meta name="author" content="李君豪">
     <title>李君豪 | 个人主页</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --bg: #0f172a;
+            --bg-soft: #1e293b;
+            --card: rgba(255, 255, 255, 0.06);
+            --card-border: rgba(255, 255, 255, 0.12);
+            --text: #f1f5f9;
+            --text-dim: #94a3b8;
+            --accent: #38bdf8;
+            --accent-2: #f97316;
+            --gradient: linear-gradient(135deg, #0ea5e9, #6366f1);
         }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        #bg-canvas {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .hero, section, footer { position: relative; z-index: 1; }
 
         body {
-            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
-            background: #f5f7fa;
-            color: #333;
-            line-height: 1.6;
+            font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            overflow-x: hidden;
         }
 
-        .container {
-            max-width: 720px;
-            margin: 40px auto;
-            padding: 0 20px;
-        }
-
-        .card {
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-            padding: 40px;
+        /* ---------- Hero ---------- */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             text-align: center;
+            position: relative;
+            padding: 40px 20px;
+            overflow: hidden;
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(90px);
+            opacity: 0.5;
+            pointer-events: none;
+            will-change: transform;
+            transition: transform 0.4s ease-out;
+        }
+
+        .blob-1 {
+            width: 480px;
+            height: 480px;
+            background: radial-gradient(circle, rgba(14, 165, 233, 0.45), transparent 65%);
+            top: -8%;
+            right: -6%;
+        }
+
+        .blob-2 {
+            width: 420px;
+            height: 420px;
+            background: radial-gradient(circle, rgba(249, 115, 22, 0.3), transparent 65%);
+            bottom: -6%;
+            left: -4%;
+        }
+
+        .blob-3 {
+            width: 360px;
+            height: 360px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.35), transparent 65%);
+            top: 35%;
+            left: 30%;
+        }
+
+        .avatar-wrap {
+            position: relative;
+            margin-bottom: 28px;
         }
 
         .avatar {
-            width: 160px;
-            height: 160px;
+            width: 180px;
+            height: 180px;
             border-radius: 50%;
             object-fit: cover;
-            border: 4px solid #4a90d9;
-            margin-bottom: 20px;
+            border: 4px solid transparent;
+            background: var(--gradient) border-box;
+            box-shadow: 0 0 40px rgba(56, 189, 248, 0.35);
         }
 
-        h1 {
-            font-size: 28px;
-            margin-bottom: 8px;
+        .hero h1 {
+            font-size: clamp(36px, 6vw, 56px);
+            letter-spacing: 4px;
+            margin-bottom: 10px;
         }
 
-        .student-id {
-            color: #888;
+        .hero .subtitle {
+            font-size: clamp(15px, 2vw, 19px);
+            color: var(--text-dim);
+        }
+
+        .hero .subtitle .accent {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 600;
+        }
+
+        .typing {
+            margin-top: 14px;
             font-size: 16px;
-            margin-bottom: 24px;
+            color: var(--accent);
+            font-family: Consolas, monospace;
         }
 
-        .info {
-            text-align: left;
-            margin-top: 10px;
+        .typing::after {
+            content: "▌";
+            animation: blink 1s step-end infinite;
         }
 
-        .info p {
-            padding: 10px 0;
-            border-bottom: 1px solid #eee;
-        }
+        @keyframes blink { 50% { opacity: 0; } }
 
-        .info p:last-child {
-            border-bottom: none;
-        }
-
-        .info strong {
-            color: #4a90d9;
-            display: inline-block;
-            width: 90px;
-        }
-
-        footer {
-            text-align: center;
-            color: #aaa;
+        .scroll-hint {
+            position: absolute;
+            bottom: 32px;
+            color: var(--text-dim);
             font-size: 13px;
-            margin-top: 24px;
+            animation: float 2s ease-in-out infinite;
+        }
+
+        @keyframes float { 50% { transform: translateY(-8px); } }
+
+        /* ---------- Sections ---------- */
+        section {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 90px 24px 0;
+        }
+
+        .section-title {
+            font-size: 26px;
+            margin-bottom: 36px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-title::before {
+            content: "";
+            width: 6px;
+            height: 28px;
+            border-radius: 3px;
+            background: var(--gradient);
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 28px;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s, border-color 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            border-color: var(--accent);
+        }
+
+        .card .icon { font-size: 32px; margin-bottom: 12px; }
+
+        .card h3 { font-size: 17px; margin-bottom: 6px; }
+
+        .card p { color: var(--text-dim); font-size: 14px; }
+
+        /* ---------- Timeline ---------- */
+        .timeline { position: relative; padding-left: 28px; }
+
+        .timeline::before {
+            content: "";
+            position: absolute;
+            left: 6px;
+            top: 6px;
+            bottom: 6px;
+            width: 2px;
+            background: linear-gradient(var(--accent), var(--accent-2));
+        }
+
+        .timeline-item { position: relative; padding-bottom: 28px; }
+
+        .timeline-item::before {
+            content: "";
+            position: absolute;
+            left: -28px;
+            top: 8px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--bg);
+            border: 3px solid var(--accent);
+        }
+
+        .timeline-item h3 { font-size: 17px; }
+
+        .timeline-item .time {
+            color: var(--accent);
+            font-size: 13px;
+            font-family: Consolas, monospace;
+        }
+
+        .timeline-item p { color: var(--text-dim); font-size: 14px; margin-top: 4px; }
+
+        /* ---------- Skills ---------- */
+        .skill-tags { display: flex; flex-wrap: wrap; gap: 12px; }
+
+        .tag {
+            padding: 8px 18px;
+            border-radius: 999px;
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        .tag:hover { background: var(--gradient); border-color: transparent; }
+
+        /* ---------- Footer ---------- */
+        footer {
+            margin-top: 100px;
+            padding: 36px 20px;
+            text-align: center;
+            color: var(--text-dim);
+            font-size: 14px;
+            border-top: 1px solid var(--card-border);
+        }
+
+        footer a { color: var(--accent); text-decoration: none; }
+        footer a:hover { text-decoration: underline; }
+
+        /* ---------- Reveal animation ---------- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+
+        .reveal.visible { opacity: 1; transform: none; }
+
+        @media (max-width: 600px) {
+            .avatar { width: 140px; height: 140px; }
+            section { padding-top: 64px; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="card">
+
+    <!-- 交互式粒子背景 -->
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- Hero -->
+    <header class="hero" id="hero">
+        <div class="blob blob-1" id="blob1"></div>
+        <div class="blob blob-2" id="blob2"></div>
+        <div class="blob blob-3" id="blob3"></div>
+        <div class="avatar-wrap">
             <img src="photo.jpg" alt="李君豪的照片" class="avatar">
-            <h1>李君豪</h1>
-            <p class="student-id">学号：f25011424</p>
-            <div class="info">
-                <p><strong>学校</strong>上海杉达学院</p>
-                <p><strong>专业</strong>计算机科学与技术</p>
-                <p><strong>年级</strong>大二</p>
-                <p><strong>爱好</strong>打篮球 🏀</p>
+        </div>
+        <h1>李君豪</h1>
+        <p class="subtitle">
+            学号 f25011424 · <span class="accent">计算机科学与技术</span> · 上海杉达学院
+        </p>
+        <p class="typing" id="typing"></p>
+        <div class="scroll-hint">↓ 向下滚动了解更多</div>
+    </header>
+
+    <!-- 关于我 -->
+    <section id="about">
+        <h2 class="section-title reveal">关于我</h2>
+        <div class="card-grid">
+            <div class="card reveal">
+                <div class="icon">🎓</div>
+                <h3>教育背景</h3>
+                <p>上海杉达学院 · 大二在读<br>计算机科学与技术专业</p>
+            </div>
+            <div class="card reveal">
+                <div class="icon">🏀</div>
+                <h3>兴趣爱好</h3>
+                <p>热爱打篮球，享受团队协作<br>和球场上每一次进攻与防守</p>
+            </div>
+            <div class="card reveal">
+                <div class="icon">💻</div>
+                <h3>学习方向</h3>
+                <p>正在学习开源软件开发<br>探索编程与 Web 技术</p>
             </div>
         </div>
-        <footer>
-            <p>© 2026 李君豪 · <a href="https://github.com/Hunshow">GitHub: Hunshow</a></p>
-        </footer>
-    </div>
+    </section>
+
+    <!-- 学习历程 -->
+    <section id="journey">
+        <h2 class="section-title reveal">学习历程</h2>
+        <div class="timeline">
+            <div class="timeline-item reveal">
+                <span class="time">2025.09 — 至今</span>
+                <h3>上海杉达学院 · 计算机科学与技术</h3>
+                <p>系统学习程序设计、数据结构等专业课程，参与开源软件课程实践。</p>
+            </div>
+            <div class="timeline-item reveal">
+                <span class="time">2026.09</span>
+                <h3>完成第一个开源课程项目</h3>
+                <p>学习 Git / GitHub 工作流，按照开源社区规范发布了本个人网页项目。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 技能标签 -->
+    <section id="skills">
+        <h2 class="section-title reveal">我在接触的东西</h2>
+        <div class="skill-tags reveal">
+            <span class="tag">C / C++</span>
+            <span class="tag">HTML / CSS</span>
+            <span class="tag">JavaScript</span>
+            <span class="tag">Git & GitHub</span>
+            <span class="tag">Linux</span>
+            <span class="tag">篮球 🏀</span>
+        </div>
+    </section>
+
+    <footer class="reveal">
+        <p>© 2026 李君豪 · <a href="https://github.com/Hunshow" target="_blank">GitHub @Hunshow</a></p>
+        <p>用 ❤️ 和开源精神构建 · Powered by GitHub Pages</p>
+    </footer>
+
+    <script>
+        // ============ 交互式粒子背景 ============
+        const canvas = document.getElementById("bg-canvas");
+        const ctx = canvas.getContext("2d");
+        let particles = [];
+        let mouse = { x: null, y: null, active: false };
+
+        const MOUSE_RADIUS = 160;      // 鼠标影响范围
+        const LINK_DIST = 110;         // 粒子连线距离
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener("resize", resizeCanvas);
+
+        // 粒子数量随屏幕大小自适应
+        function createParticles() {
+            const count = Math.min(90, Math.floor(canvas.width * canvas.height / 16000));
+            particles = Array.from({ length: count }, () => ({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                vx: (Math.random() - 0.5) * 0.5,
+                vy: (Math.random() - 0.5) * 0.5,
+                r: Math.random() * 1.8 + 0.8
+            }));
+        }
+        createParticles();
+        window.addEventListener("resize", createParticles);
+
+        window.addEventListener("mousemove", e => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+            mouse.active = true;
+            // 光斑视差：三个光斑以不同深度反向/正向漂移
+            const nx = e.clientX / window.innerWidth - 0.5;
+            const ny = e.clientY / window.innerHeight - 0.5;
+            document.getElementById("blob1").style.transform = `translate(${nx * -46}px, ${ny * -46}px)`;
+            document.getElementById("blob2").style.transform = `translate(${nx * 34}px, ${ny * 34}px)`;
+            document.getElementById("blob3").style.transform = `translate(${nx * -22}px, ${ny * -22}px)`;
+        });
+        window.addEventListener("mouseout", () => { mouse.active = false; });
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (const p of particles) {
+                // 鼠标斥力：靠近鼠标的粒子被轻轻推开
+                if (mouse.active) {
+                    const dx = p.x - mouse.x;
+                    const dy = p.y - mouse.y;
+                    const dist = Math.hypot(dx, dy);
+                    if (dist < MOUSE_RADIUS && dist > 0) {
+                        const force = (MOUSE_RADIUS - dist) / MOUSE_RADIUS * 0.6;
+                        p.vx += dx / dist * force;
+                        p.vy += dy / dist * force;
+                    }
+                }
+
+                p.x += p.vx;
+                p.y += p.vy;
+
+                // 阻尼，防止速度无限增大
+                p.vx *= 0.98;
+                p.vy *= 0.98;
+                // 保持基础漂移速度
+                const speed = Math.hypot(p.vx, p.vy);
+                if (speed < 0.15) {
+                    p.vx += (Math.random() - 0.5) * 0.05;
+                    p.vy += (Math.random() - 0.5) * 0.05;
+                }
+
+                // 边缘环绕
+                if (p.x < -20) p.x = canvas.width + 20;
+                if (p.x > canvas.width + 20) p.x = -20;
+                if (p.y < -20) p.y = canvas.height + 20;
+                if (p.y > canvas.height + 20) p.y = -20;
+
+                // 绘制粒子
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                ctx.fillStyle = "rgba(56, 189, 248, 0.55)";
+                ctx.fill();
+            }
+
+            // 粒子连线
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const a = particles[i], b = particles[j];
+                    const dist = Math.hypot(a.x - b.x, a.y - b.y);
+                    if (dist < LINK_DIST) {
+                        ctx.beginPath();
+                        ctx.moveTo(a.x, a.y);
+                        ctx.lineTo(b.x, b.y);
+                        ctx.strokeStyle = `rgba(99, 102, 241, ${(1 - dist / LINK_DIST) * 0.35})`;
+                        ctx.lineWidth = 0.7;
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            // 鼠标与粒子之间的连线（高亮）
+            if (mouse.active) {
+                for (const p of particles) {
+                    const dist = Math.hypot(p.x - mouse.x, p.y - mouse.y);
+                    if (dist < MOUSE_RADIUS) {
+                        ctx.beginPath();
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(mouse.x, mouse.y);
+                        ctx.strokeStyle = `rgba(56, 189, 248, ${(1 - dist / MOUSE_RADIUS) * 0.45})`;
+                        ctx.lineWidth = 0.8;
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        // 打字机效果
+        const phrases = [
+            "大二计算机科学与技术学生",
+            "篮球爱好者 🏀",
+            "开源软件学习者",
+            "正在成为更好的自己..."
+        ];
+        const typingEl = document.getElementById("typing");
+        let pi = 0, ci = 0, deleting = false;
+
+        function type() {
+            const text = phrases[pi];
+            typingEl.textContent = text.slice(0, ci);
+            if (!deleting) {
+                if (ci < text.length) { ci++; setTimeout(type, 120); }
+                else { deleting = true; setTimeout(type, 1600); }
+            } else {
+                if (ci > 0) { ci--; setTimeout(type, 50); }
+                else { deleting = false; pi = (pi + 1) % phrases.length; setTimeout(type, 400); }
+            }
+        }
+        type();
+
+        // 滚动入场动画
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(e => {
+                if (e.isIntersecting) e.target.classList.add("visible");
+            });
+        }, { threshold: 0.15 });
+        document.querySelectorAll(".reveal").forEach(el => observer.observe(el));
+    </script>
 </body>
 </html>
